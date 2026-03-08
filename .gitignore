@@ -1,12 +1,5 @@
-# Local secrets
 .env
-
-# Python
+venv/
 __pycache__/
 *.pyc
-.venv/
-
-# Logs / OS
-*.log
-.DS_Store
-Thumbs.db
+jarvis_memory.db

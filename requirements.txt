@@ -1,0 +1,7 @@
+﻿Flask>=3.0,<4.0
+google-genai>=1.60.0,<2.0
+SpeechRecognition>=3.14.0,<4.0
+pyttsx3>=2.99,<3.0
+psutil>=6.0,<8.0
+python-dotenv>=1.0,<2.0
+PyAudio==0.2.14
