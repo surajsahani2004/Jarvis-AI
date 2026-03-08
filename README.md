@@ -1,86 +1,97 @@
-# Jarvis AI - Voice Assistant with Gemini + Live Dashboard
+# JarvisAI - Smart Voice Assistant Dashboard
 
-Jarvis AI is a Python-based desktop voice assistant that listens to commands, speaks responses, uses Google Gemini for intelligent conversation, and exposes a lightweight Flask dashboard for live status updates.
+JarvisAI is a lightweight web + voice assistant project built with PHP and JavaScript.  
+It provides:
+- Live weather updates
+- Top Indian news headlines
+- Browser voice-command actions (speech recognition)
 
 ## Features
-- Voice input via microphone (`SpeechRecognition`)
-- Text-to-speech output (`pyttsx3`)
-- AI responses powered by `gemini-1.5-flash`
-- Session memory/context for more natural conversations
-- Windows automation commands (Notepad, Calculator)
-- YouTube playback by voice command
-- Real-time system stats (CPU and RAM) on dashboard (`psutil`)
-- Graceful exit command (`exit` / `stop`)
+- Voice trigger button with speech recognition (`SpeechRecognition` / `webkitSpeechRecognition`)
+- Voice commands like:
+  - `weather`
+  - `weather in <city>`
+  - `news`
+- Real-time weather from OpenWeatherMap API
+- Top headlines from NewsAPI
+- Modern responsive UI dashboard
+- Optional MySQL setup scaffold for future user features
 
 ## Tech Stack
-- Python
-- Flask
-- Google GenAI SDK
-- SpeechRecognition + PyAudio
-- pyttsx3
-- psutil
+- PHP (backend rendering + API calls)
+- JavaScript (voice commands + browser interaction)
+- CSS (custom modern responsive styling)
+- MySQL (optional schema included)
 
 ## Project Structure
 ```text
 Jarvis-AI/
-├─ main.py
-├─ requirements.txt
-├─ jarvis_memory.db
+├─ api/
+│  ├─ env.php
+│  ├─ config.php
+│  └─ functions.php
+├─ public/
+│  ├─ index.php
+│  ├─ index.py
+│  ├─ css/
+│  │  ├─ style.css
+│  │  └─ db/
+│  │     ├─ jarvis.sql
+│  │     └─ README.md
+│  └─ js/
+│     └─ main.js
+├─ .env.example
+├─ .gitignore
+├─ requirements-python.txt
 └─ README.md
 ```
 
-## Quick Start
-1. Clone repository:
+## Setup (XAMPP / Local PHP)
+1. Clone repo:
 ```bash
 git clone https://github.com/surajsahani2004/Jarvis-AI.git
 cd Jarvis-AI
 ```
 
-2. Create virtual environment:
+2. Create `.env` from sample:
 ```bash
-python -m venv .venv
+cp .env.example .env
 ```
 
-3. Activate environment:
-- Windows (PowerShell):
-```powershell
-.\.venv\Scripts\Activate.ps1
+3. Add API keys in `.env`:
+- `OPENWEATHER_API_KEY`
+- `NEWS_API_KEY`
+
+4. Put project inside XAMPP `htdocs` (or configure virtual host).
+
+5. Open:
+```text
+http://localhost/Jarvis-AI/public/
 ```
 
-4. Install dependencies:
+## Optional Python Assistant
+`public/index.py` is a separate CLI assistant flow using Gemini tool-calling.
+
+Run it with:
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-python.txt
+python public/index.py
 ```
 
-5. Configure Gemini API key in `main.py`:
-```python
-client = genai.Client(api_key="YOUR_API_KEY_HERE")
-```
+## Voice Commands
+- `weather` -> scrolls to weather panel
+- `weather in mumbai` -> reloads weather for city
+- `news` -> scrolls to news panel
 
-6. Run:
-```bash
-python main.py
-```
+## Database (Optional)
+If you want DB support for future modules:
+1. Import `public/css/db/jarvis.sql`
+2. Update `.env` DB values
+3. Set `DB_CONNECT=true`
 
-## Example Voice Commands
-- `open notepad`
-- `open calculator`
-- `play [song name] on youtube`
-- `time`
-- `exit` or `stop`
-
-## How It Works
-1. Flask server starts and opens local dashboard.
-2. Jarvis listens continuously from microphone.
-3. If a local command is detected, it executes immediately.
-4. Otherwise, Jarvis sends prompt + memory context to Gemini and speaks the response.
-5. Dashboard endpoint `/data` streams latest query, response, CPU, RAM, and status.
-
-## Notes
-- This project is currently optimized for Windows automation commands.
-- Keep your API key private; do not commit real keys to GitHub.
-- If you use this as a portfolio project, add dashboard screenshots under a `screenshots/` folder and link them here.
+## Security Notes
+- API keys are now read from `.env`, not hardcoded.
+- Do not commit `.env` to GitHub.
 
 ## Author
-Suraj Sahani  
-B.Sc Computer Science
+Suraj Sahani

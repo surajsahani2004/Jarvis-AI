@@ -1,0 +1,12 @@
+# Local secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Logs / OS
+*.log
+.DS_Store
+Thumbs.db
