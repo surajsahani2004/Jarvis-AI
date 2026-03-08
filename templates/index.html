@@ -1,47 +1,240 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Jarvis Core V3.6 - Final Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis Core Dashboard</title>
     <style>
-        :root { --main: #00ff00; --bg: #0a0a0a; --panel: #121212; }
-        body { background: var(--bg); color: var(--main); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .dashboard { width: 850px; border: 2px solid var(--main); padding: 25px; border-radius: 15px; background: var(--panel); box-shadow: 0 0 30px #004400; }
-        .stats { display: flex; justify-content: space-around; margin: 20px 0; font-weight: bold; color: cyan; border-bottom: 1px solid #333; padding-bottom: 15px; }
-        .display { background: #000; padding: 20px; border-radius: 10px; border-left: 5px solid var(--main); margin-top: 15px; }
-        .label { color: #555; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; }
-        .content { font-size: 1.8rem; color: #fff; min-height: 50px; margin-top: 8px; line-height: 1.4; }
-        #status { color: #ff00ff; font-weight: 900; }
+        :root {
+            --bg-1: #08121f;
+            --bg-2: #102234;
+            --panel: #0d1b2a;
+            --line: #1f354b;
+            --text: #e7f2ff;
+            --muted: #93abc2;
+            --accent: #27c39f;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(1200px 500px at 20% -10%, #10314f 0%, transparent 55%),
+                        linear-gradient(160deg, var(--bg-1), var(--bg-2));
+            color: var(--text);
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            display: grid;
+            place-items: center;
+            padding: 18px;
+        }
+
+        .dashboard {
+            width: min(1100px, 96vw);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: rgba(13, 27, 42, 0.86);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+            padding: 20px;
+        }
+
+        .head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            margin: 0;
+            letter-spacing: 0.08em;
+            font-size: clamp(1.4rem, 2.2vw, 2rem);
+        }
+
+        .kicker {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(130px, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .stat {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px;
+            background: #0a1622;
+        }
+
+        .label {
+            color: var(--muted);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 5px;
+        }
+
+        .value {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 12px;
+        }
+
+        .panel {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #0a1622;
+            padding: 14px;
+        }
+
+        .panel h2 {
+            margin: 0 0 10px;
+            font-size: 1.05rem;
+            color: var(--accent);
+        }
+
+        .content {
+            min-height: 56px;
+            font-size: 1.08rem;
+            line-height: 1.45;
+        }
+
+        .history-list {
+            margin: 0;
+            padding-left: 16px;
+            max-height: 330px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            margin-bottom: 10px;
+            color: #d7e8f8;
+            line-height: 1.35;
+        }
+
+        .history-meta {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .footer {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        #status { color: #f8961e; }
+
+        @media (max-width: 860px) {
+            .stats {
+                grid-template-columns: repeat(2, minmax(120px, 1fr));
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
     <script>
-        setInterval(function(){
-            fetch('/data').then(res => res.json()).then(data => {
+        function renderHistory(items) {
+            const list = document.getElementById('history');
+            list.innerHTML = '';
+
+            if (!items || items.length === 0) {
+                const li = document.createElement('li');
+                li.className = 'history-item';
+                li.textContent = 'No conversation history yet.';
+                list.appendChild(li);
+                return;
+            }
+
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'history-item';
+                li.innerHTML = `
+                    <div><strong>You:</strong> ${item.query}</div>
+                    <div><strong>Jarvis:</strong> ${item.response}</div>
+                    <div class="history-meta">${item.source} | ${item.created_at}</div>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        async function refreshData() {
+            try {
+                const res = await fetch('/data');
+                const data = await res.json();
                 document.getElementById('q').innerText = data.query;
                 document.getElementById('r').innerText = data.response;
-                document.getElementById('cpu').innerText = "CPU: " + data.cpu + "%";
-                document.getElementById('ram').innerText = "RAM: " + data.ram + "%";
+                document.getElementById('cpu').innerText = data.cpu + '%';
+                document.getElementById('ram').innerText = data.ram + '%';
                 document.getElementById('status').innerText = data.status;
-                if(data.status == "OFFLINE") document.getElementById('status').style.color = "red";
-            });
-        }, 1200);
+                document.getElementById('updated').innerText = data.last_updated || '-';
+                renderHistory(data.history || []);
+            } catch (err) {
+                document.getElementById('r').innerText = 'Dashboard fetch failed.';
+            }
+        }
+
+        setInterval(refreshData, 1200);
+        window.addEventListener('load', refreshData);
     </script>
 </head>
 <body>
-    <div class="dashboard">
-        <h1 style="text-align:center; letter-spacing:10px; margin-top:0;">JARVIS CORE V3</h1>
-        <div class="stats">
-            <div id="cpu">CPU: 0%</div>
-            <div id="ram">RAM: 0%</div>
-            <div>STATUS: <span id="status">ACTIVE</span></div>
-        </div>
-        <div class="display">
-            <span class="label">User Command</span>
-            <div id="q" class="content">Listening...</div>
-        </div>
-        <div class="display">
-            <span class="label">Jarvis Intelligence</span>
-            <div id="r" class="content">Awaiting instructions, Suraj.</div>
-        </div>
-        <p style="text-align: center; color: #333; font-size: 10px; margin-top: 20px;">Developed by Suraj Sahani | B.Sc CS | 2026</p>
-    </div>
+    <main class="dashboard">
+        <header class="head">
+            <div>
+                <h1>JARVIS CORE</h1>
+                <p class="kicker">Voice + Flask + Gemini + SQLite Memory</p>
+            </div>
+        </header>
+
+        <section class="stats">
+            <div class="stat">
+                <div class="label">CPU</div>
+                <div id="cpu" class="value">0%</div>
+            </div>
+            <div class="stat">
+                <div class="label">RAM</div>
+                <div id="ram" class="value">0%</div>
+            </div>
+            <div class="stat">
+                <div class="label">Status</div>
+                <div class="value"><span id="status">ACTIVE</span></div>
+            </div>
+            <div class="stat">
+                <div class="label">Updated</div>
+                <div id="updated" class="value">-</div>
+            </div>
+        </section>
+
+        <section class="grid">
+            <article class="panel">
+                <h2>Current Command</h2>
+                <div id="q" class="content">Listening...</div>
+                <h2>Current Response</h2>
+                <div id="r" class="content">Awaiting instructions...</div>
+            </article>
+            <article class="panel">
+                <h2>Recent Memory (SQLite)</h2>
+                <ul id="history" class="history-list"></ul>
+            </article>
+        </section>
+
+        <p class="footer">Developed by Suraj Sahani | B.Sc CS</p>
+    </main>
 </body>
 </html>

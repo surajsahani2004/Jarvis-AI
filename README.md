@@ -1,14 +1,24 @@
-﻿# Jarvis AI V2 (Python + Flask + Gemini)
+﻿# Jarvis AI V2 (CV-Ready Baseline Project)
 
-Voice-enabled virtual assistant with a real-time Flask dashboard.
+A clear, fundamentals-focused AI assistant project using Python + Flask + Gemini.
 
-## Features
-- Voice command recognition (`SpeechRecognition`)
-- Text-to-speech response (`pyttsx3`)
-- Gemini AI response generation (`google-genai`)
-- Live web dashboard for command/response/system stats
-- CPU and RAM monitoring (`psutil`)
-- Basic Windows automation commands (Notepad, Calculator)
+## What This Demonstrates
+- Voice input pipeline (`SpeechRecognition`)
+- Voice output pipeline (`pyttsx3`)
+- Flask dashboard + REST endpoints
+- Gemini API integration for AI responses
+- Real-time system monitoring (CPU/RAM via `psutil`)
+- SQLite-based conversation memory (`jarvis_memory.db`)
+- Basic OS automation commands (Notepad, Calculator, YouTube)
+
+## Architecture (Simple and Clear)
+- `main.py`
+  - Flask routes: `/`, `/data`, `/health`
+  - Voice loop (`listen -> command handler -> response`)
+  - Built-in command handler + Gemini fallback
+  - SQLite memory store (`add_memory`, `recent_memory`)
+- `templates/index.html`
+  - Live dashboard for query/response/stats/history
 
 ## Project Structure
 ```text
@@ -31,23 +41,34 @@ pip install -r requirements.txt
 Copy-Item .env.example .env
 ```
 
-Set `.env` values:
+## Environment
 ```env
 GEMINI_API_KEY=your_real_api_key
 GEMINI_MODEL=gemini-1.5-flash
 PORT=5000
+JARVIS_NO_VOICE=false
 ```
 
-Run:
+## Run
+Normal mode (voice + dashboard):
 ```powershell
 python main.py
 ```
 
-Dashboard:
+No-voice mode (dashboard only, useful for demo/testing):
+```powershell
+$env:JARVIS_NO_VOICE='true'; python main.py
+```
+
+Dashboard URL:
 ```text
 http://127.0.0.1:5000
 ```
 
+## CV Description (Use This)
+Designed a voice-enabled AI assistant with Flask dashboard, Gemini API integration, and SQLite memory.
+Implemented modular command handling for system automation and real-time monitoring of CPU/RAM metrics.
+
 ## Notes
-- `venv/` and `jarvis_memory.db` are intentionally ignored in Git.
-- Keep your Gemini API key private (never commit `.env`).
+- Keep `.env` private (never commit API key).
+- `jarvis_memory.db` is auto-created and git-ignored.
