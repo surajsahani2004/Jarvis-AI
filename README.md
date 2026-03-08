@@ -1,57 +1,86 @@
-Jarvis AI - Smart Virtual Assistant
-Jarvis AI V3.6 is an advanced, voice-activated virtual assistant developed in Python. It leverages the Google Gemini 1.5 Flash API for intelligent, context-aware conversations and features a Real-time Web Dashboard for monitoring system performance and chat logs.
+# Jarvis AI - Voice Assistant with Gemini + Live Dashboard
 
-Key Features
-Smart Memory (Context Awareness): Jarvis remembers previous interactions within a session, allowing for natural, human-like conversations.
+Jarvis AI is a Python-based desktop voice assistant that listens to commands, speaks responses, uses Google Gemini for intelligent conversation, and exposes a lightweight Flask dashboard for live status updates.
 
-Live Web Dashboard: A sleek, Flask-powered web interface that displays real-time voice commands and AI responses.
+## Features
+- Voice input via microphone (`SpeechRecognition`)
+- Text-to-speech output (`pyttsx3`)
+- AI responses powered by `gemini-1.5-flash`
+- Session memory/context for more natural conversations
+- Windows automation commands (Notepad, Calculator)
+- YouTube playback by voice command
+- Real-time system stats (CPU and RAM) on dashboard (`psutil`)
+- Graceful exit command (`exit` / `stop`)
 
-System Health Monitoring: Tracks live hardware performance, including CPU and RAM usage, using the psutil library.
+## Tech Stack
+- Python
+- Flask
+- Google GenAI SDK
+- SpeechRecognition + PyAudio
+- pyttsx3
+- psutil
 
-Windows Automation: Executes voice commands to launch native applications like Notepad, Calculator, and Command Prompt.
+## Project Structure
+```text
+Jarvis-AI/
+├─ main.py
+├─ requirements.txt
+├─ jarvis_memory.db
+└─ README.md
+```
 
-Media Control: Seamlessly plays music or videos on YouTube and JioSaavn via voice commands.
+## Quick Start
+1. Clone repository:
+```bash
+git clone https://github.com/surajsahani2004/Jarvis-AI.git
+cd Jarvis-AI
+```
 
-Auto-Exit System: To prevent microphone feedback, Jarvis automatically shuts down its listener when media playback begins.
+2. Create virtual environment:
+```bash
+python -m venv .venv
+```
 
-Tech Stack
-Language: Python 3.13
+3. Activate environment:
+- Windows (PowerShell):
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
 
-AI Engine: Google Gemini-1.5-Flash
-
-Web Framework: Flask (For the Dashboard)
-
-Core Libraries:
-
-SpeechRecognition: For processing voice input.
-
-Pyttsx3: For high-quality text-to-speech output.
-
-psutil: For real-time hardware analytics.
-
-Installation & Setup
-Clone the Repository:
-
-Bash
-git clone https://github.com/SahaniSuraj/Jarvis-AI-V2.git
-cd Jarvis-AI-V2
-Install Dependencies:
-
-Bash
+4. Install dependencies:
+```bash
 pip install -r requirements.txt
-Configure API Key: Open main.py and enter your Gemini API Key: client = genai.Client(api_key="YOUR_API_KEY")
+```
 
-Run the Application:
+5. Configure Gemini API key in `main.py`:
+```python
+client = genai.Client(api_key="YOUR_API_KEY_HERE")
+```
 
-Bash
+6. Run:
+```bash
 python main.py
-Dashboard Preview
-The dashboard provides a centralized view of the assistant's operations:
+```
 
-User Command: Displays the recognized text from your voice input.
+## Example Voice Commands
+- `open notepad`
+- `open calculator`
+- `play [song name] on youtube`
+- `time`
+- `exit` or `stop`
 
-Jarvis Intelligence: Shows the AI-generated response in real-time.
+## How It Works
+1. Flask server starts and opens local dashboard.
+2. Jarvis listens continuously from microphone.
+3. If a local command is detected, it executes immediately.
+4. Otherwise, Jarvis sends prompt + memory context to Gemini and speaks the response.
+5. Dashboard endpoint `/data` streams latest query, response, CPU, RAM, and status.
 
-System Stats: Visual indicators for current CPU and RAM consumption.
+## Notes
+- This project is currently optimized for Windows automation commands.
+- Keep your API key private; do not commit real keys to GitHub.
+- If you use this as a portfolio project, add dashboard screenshots under a `screenshots/` folder and link them here.
 
-Developed by: Suraj Sahani Education: B.Sc Computer Science Student, Mumbai University
+## Author
+Suraj Sahani  
+B.Sc Computer Science
